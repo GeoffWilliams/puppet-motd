@@ -266,7 +266,19 @@ Cowboy free zone!\nBeware that changes maybe overwritten without notice.\
 102
 103
 104
-105</pre>
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
@@ -280,11 +292,33 @@ class motd (
 
   $motd_content = pick($content, template(&#39;motd/motd.erb&#39;))
 
+  if $facts[&#39;kernel&#39;] == &#39;windows&#39; {
+    registry_value { &#39;HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption&#39;:
+      ensure =&gt; present,
+      type   =&gt; string,
+      data   =&gt; &#39;Message of the day&#39;,
+    }
+    registry_value { &#39;HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext&#39;:
+      ensure =&gt; present,
+      type   =&gt; string,
+      data   =&gt; $motd_content,
+    }
+  } else {
 
-  if $facts[&#39;kernel&#39;] == &#39;Linux&#39; {
+    # AIX officially needs to have ownership by `bin` according to many of the
+    # audit guides out there.  Perhaps it needs this to write the file with a
+    # message but I suspect this is just a &quot;because I told you so&quot; thing
+    if $facts[&#39;kernel&#39;] == &#39;AIX&#39; {
+      $owner = &#39;bin&#39;
+      $group = &#39;bin&#39;
+    } else {
+      $owner = &#39;root&#39;
+      $group = &#39;root&#39;
+    }
+
     File {
-      owner   =&gt; &#39;root&#39;,
-      group   =&gt; &#39;root&#39;,
+      owner   =&gt; $owner,
+      group   =&gt; $group,
       mode    =&gt; &#39;0644&#39;,
     }
 
@@ -299,8 +333,8 @@ class motd (
 
 
     concat { $motd:
-      owner =&gt; &#39;root&#39;,
-      group =&gt; &#39;root&#39;,
+      owner =&gt; $owner,
+      group =&gt; $group,
       mode  =&gt; &#39;0644&#39;
     }
 
@@ -343,17 +377,7 @@ class motd (
         content =&gt; $_issue_net_content,
       }
     }
-  } elsif $facts[&#39;kernel&#39;] == &#39;windows&#39; {
-    registry_value { &#39;HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption&#39;:
-      ensure =&gt; present,
-      type   =&gt; string,
-      data   =&gt; &#39;Message of the day&#39;,
-    }
-    registry_value { &#39;HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext&#39;:
-      ensure =&gt; present,
-      type   =&gt; string,
-      data   =&gt; $motd_content,
-    }
+
   }
 }</pre>
       </td>

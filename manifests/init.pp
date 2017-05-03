@@ -27,11 +27,33 @@ class motd (
 
   $motd_content = pick($content, template('motd/motd.erb'))
 
+  if $facts['kernel'] == 'windows' {
+    registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption':
+      ensure => present,
+      type   => string,
+      data   => 'Message of the day',
+    }
+    registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext':
+      ensure => present,
+      type   => string,
+      data   => $motd_content,
+    }
+  } else {
 
-  if $facts['kernel'] == 'Linux' {
+    # AIX officially needs to have ownership by `bin` according to many of the
+    # audit guides out there.  Perhaps it needs this to write the file with a
+    # message but I suspect this is just a "because I told you so" thing
+    if $facts['kernel'] == 'AIX' {
+      $owner = 'bin'
+      $group = 'bin'
+    } else {
+      $owner = 'root'
+      $group = 'root'
+    }
+
     File {
-      owner   => 'root',
-      group   => 'root',
+      owner   => $owner,
+      group   => $group,
       mode    => '0644',
     }
 
@@ -46,8 +68,8 @@ class motd (
 
 
     concat { $motd:
-      owner => 'root',
-      group => 'root',
+      owner => $owner,
+      group => $group,
       mode  => '0644'
     }
 
@@ -90,16 +112,6 @@ class motd (
         content => $_issue_net_content,
       }
     }
-  } elsif $facts['kernel'] == 'windows' {
-    registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption':
-      ensure => present,
-      type   => string,
-      data   => 'Message of the day',
-    }
-    registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext':
-      ensure => present,
-      type   => string,
-      data   => $motd_content,
-    }
+
   }
 }
