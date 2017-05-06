@@ -19,9 +19,9 @@
 #   }
 #
 class motd (
-  $content            = undef,
-  $issue_content      = undef,
-  $issue_net_content  = undef,
+  $content                    = undef,
+  $issue_content              = undef,
+  $issue_net_content          = undef,
   Boolean $identical_message  = false,
 ) {
 
