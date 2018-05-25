@@ -4,6 +4,10 @@
 #### Table of Contents
 
 1. [Description](#description)
+1. [Features](#features)
+1. [Puppet resource implementation](#puppet-resource-implementation)
+1. [motd precedence](#motd-precedence)
+1. [Value handling](#value-handling)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 1. [Limitations - OS compatibility, etc.](#limitations)
@@ -11,10 +15,11 @@
 
 ## Description
 
-A simple Message of the Day Puppet Module for Linux, Unix and Windows.
+Manage MOTD with puppet in the files:
 
-## Usage
-See reference and examples
+* `/etc/motd` 
+* `/etc/issue` 
+* `/etc/issue.net`
 
 ## Reference
 [generated documentation](https://rawgit.com/GeoffWilliams/puppet-motd/master/doc/index.html).
@@ -26,7 +31,8 @@ bundle exec puppet strings
 ```
 
 ## Limitations
-* Not supported by Puppet, Inc.
+*   Tested on RHEL/CentOS 7 so far. You might be able to support other systems by passing the appropriate command to 
+    rebuild initrd on your platform
 
 ## Development
 
@@ -44,6 +50,3 @@ make
 ```
 
 See `.travis.yml` for a working CI example
-
-## Acknowledgement
-Based on the [puppetlabs/motd](https://forge.puppet.com/puppetlabs/motd) forge module

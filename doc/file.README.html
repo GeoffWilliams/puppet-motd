@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -65,105 +65,75 @@ src="https://travis-ci.org/GeoffWilliams/puppet-motd.svg?branch=master"></a></p>
 
 <h4 id="label-Table+of+Contents">Table of Contents</h4>
 <ol><li>
-<p><a href="#description">Description</a></p>
+<p><a href="#label-Description">Description</a></p>
 </li><li>
-<p><a href="#setup">Setup - The basics of getting started with motd</a></p>
-<ul><li>
-<p><a href="#what-motd-affects">What motd affects</a></p>
+<p><a href="#label-Features">Features</a></p>
 </li><li>
-<p><a href="#setup-requirements">Setup requirements</a></p>
+<p><a href="#label-Puppet+resource+implementation">Puppet resource
+implementation</a></p>
 </li><li>
-<p><a href="#beginning-with-motd">Beginning with motd</a></p>
-</li></ul>
+<p><a href="#label-Motd+precedence">motd precedence</a></p>
 </li><li>
-<p><a href="#usage">Usage - Configuration options and additional
+<p><a href="#label-Value+handling">Value handling</a></p>
+</li><li>
+<p><a href="#label-Usage">Usage - Configuration options and additional
 functionality</a></p>
 </li><li>
-<p><a href="#reference">Reference - An under-the-hood peek at what the module
+<p><a href="#label-Reference">Reference - An under-the-hood peek at what the module
 is doing and how</a></p>
 </li><li>
-<p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
+<p><a href="#label-Limitations">Limitations - OS compatibility, etc.</a></p>
 </li><li>
-<p><a href="#development">Development - Guide for contributing to the
+<p><a href="#label-Development">Development - Guide for contributing to the
 module</a></p>
 </li></ol>
 
 <h2 id="label-Description">Description</h2>
 
-<p>Start with a one- or two-sentence summary of what the module does and/or
-what problem it solves. This is your 30-second elevator pitch for your
-module. Consider including OS/Puppet version it works with.</p>
-
-<p>You can give more descriptive information in a second paragraph. This
-paragraph should answer the questions: “What does this module <em>do</em>?”
-and “Why would I use it?” If your module has a range of functionality
-(installation, configuration, management, etc.), this is the time to
-mention it.</p>
-
-<h2 id="label-Setup">Setup</h2>
-
-<h3 id="label-What+motd+affects+OPTIONAL">What motd affects <strong>OPTIONAL</strong></h3>
-
-<p>If it&#39;s obvious what your module touches, you can skip this section.
-For example, folks can probably figure out that your mysql_instance module
-affects their MySQL instances.</p>
-
-<p>If there&#39;s more that they should know about, though, this is the place
-to mention:</p>
+<p>Manage MOTD with puppet in the files:</p>
 <ul><li>
-<p>A list of files, packages, services, or operations that the module will
-alter,  impact, or execute.</p>
+<p><code>/etc/motd</code></p>
 </li><li>
-<p>Dependencies that your module automatically installs.</p>
+<p><code>/etc/issue</code></p>
 </li><li>
-<p>Warnings or other important notices.</p>
+<p><code>/etc/issue.net</code></p>
 </li></ul>
-
-<h3 id="label-Setup+Requirements+OPTIONAL">Setup Requirements <strong>OPTIONAL</strong></h3>
-
-<p>If your module requires anything extra before setting up (pluginsync
-enabled, etc.), mention it here.</p>
-
-<p>If your most recent release breaks compatibility or requires particular
-steps for upgrading, you might want to include an additional “Upgrading”
-section here.</p>
-
-<h3 id="label-Beginning+with+motd">Beginning with motd</h3>
-
-<p>The very basic steps needed for a user to get the module up and running.
-This can include setup steps, if necessary, or it can be an example of the
-most basic use of the module.</p>
-
-<h2 id="label-Usage">Usage</h2>
-
-<p>This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It&#39;s especially helpful if you
-include usage examples and code samples for doing things with your module.</p>
 
 <h2 id="label-Reference">Reference</h2>
 
-<p>Here, include a complete list of your module&#39;s classes, types,
-providers, facts, along with the parameters for each. Users refer to this
-section (thus the name “Reference”) to find specific details; most users
-don&#39;t read it per se.</p>
+<p><a
+href="https://rawgit.com/GeoffWilliams/puppet-motd/master/doc/index.html">generated
+documentation</a>.</p>
+
+<p>Reference documentation is generated directly from source code using <a
+href="https://github.com/puppetlabs/puppet-strings">puppet-strings</a>. You
+may regenerate the documentation by running:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_bundle'>bundle</span> <span class='id identifier rubyid_exec'>exec</span> <span class='id identifier rubyid_puppet'>puppet</span> <span class='id identifier rubyid_strings'>strings</span>
+</code></pre>
 
 <h2 id="label-Limitations">Limitations</h2>
-
-<p>This is where you list OS compatibility, version compatibility, etc. If
-there are Known Issues, you might want to include them under their own
-heading here.</p>
+<ul><li>
+<p>Tested on RHEL/CentOS 7 so far. You might be able to support other systems
+by passing the appropriate command to rebuild initrd on your platform</p>
+</li></ul>
 
 <h2 id="label-Development">Development</h2>
 
-<p>Since your module is awesome, other users will want to play with it. Let
-them know what the ground rules for contributing are.</p>
+<p>PRs accepted :)</p>
 
-<h2 id="label-Release+Notes-2FContributors-2FEtc.+Optional">Release Notes/Contributors/Etc. <strong>Optional</strong></h2>
+<h2 id="label-Testing">Testing</h2>
 
-<p>If you aren&#39;t using changelog, put your release notes here (though you
-should consider using changelog). You can also add any additional sections
-you feel are necessary or important to include here. Please use the
-<code>##</code> header.</p>
+<p>This module supports testing using <a
+href="https://github.com/declarativesystems/pdqtest">PDQTest</a>.</p>
+
+<p>Test can be executed with:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_bundle'>bundle</span> <span class='id identifier rubyid_install'>install</span>
+<span class='id identifier rubyid_make'>make</span>
+</code></pre>
+
+<p>See <code>.travis.yml</code> for a working CI example</p>
 </div></div>
 
       <div id="footer">

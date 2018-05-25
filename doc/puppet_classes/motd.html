@@ -6,7 +6,7 @@
 <title>
   Puppet Class: motd
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -70,6 +70,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -284,9 +285,9 @@ Cowboy free zone!\nBeware that changes maybe overwritten without notice.\
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
 
 class motd (
-  $content            = undef,
-  $issue_content      = undef,
-  $issue_net_content  = undef,
+  $content                    = undef,
+  $issue_content              = undef,
+  $issue_net_content          = undef,
   Boolean $identical_message  = false,
 ) {
 
