@@ -1,31 +1,77 @@
 # Class: motd
 #
-# This module manages the /etc/motd file using a template
+# Setup the Message Of The Day on Windows and Linux.
 #
-# @param content [String] String to be used for motd
-# @param issue_content [String] String to be used for `/etc/issue`
-# @param issue_net_content [String] String to be used for `/etc/issue.net`
-# @param identical_message [Boolean] If true, use the main MOTD message for all
-#   messages unless overriden by `issue_content` and `issue_net`
+# *Linux*
+# Management of the files at:
+#   * `/etc/motd`
+#   * `/etc/issue`
+#   * `/etc/issue.net`
 #
-# @example
+# A file will be created for you at `/etc/motd.local` which will be displayed to local users logging in via `/etc/motd`.
+# You are free to write any content you like to this file. The `motd::register` defined type can also be used to add to
+# to `/etc/motd` if desired.
+#
+# *Windows*
+# On windows there is only one message which we write to registry key:
+#   `HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext`
+#
+# @see https://forge.puppet.com/puppetlabs/concat
+#
+# @example Default message
+# If you do not supply the MOTD content, we will generate one for you from a template. Output will be similar to:
+#   1f4ac00d071c (172.17.0.4)
+#   ===============================================================================
+#   CentOS 7.4.1708 x86_64
+#
+#   Processor: 8 x Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz
+#   Kernel:    4.15.0-22-generic
+#   Memory:    31.27 GiB
+#
+# @example Use the generic MOTD from the template
 #   include motd
 #
-# @example
+# @example Setting MOTD for all files in one go
 #   class { "motd":
 #     content => "\n\nNOTICE:\n\nThis Server is Managed by Puppet and is a \
 #   Cowboy free zone!\nBeware that changes maybe overwritten without notice.\
 #   \n\nInstalled Modules: ",
+#     identical_content => true,
 #   }
 #
+# @example Hiera to set MOTD for all files in one go
+#   motd::identical_content: true
+#   motd::content: |
+#     NOTICE:
+#
+#     This Server is Managed by Puppet and is a Cowboy free zone!
+#     Beware that changes maybe overwritten without notice
+#
+# @example Hiera to set Messages individually:
+#   motd::identical_content: true
+#   motd::content: |
+#     NOTICE:
+#
+#     This Server is Managed by Puppet and is a Cowboy free zone!
+#     Beware that changes maybe overwritten without notice
+#   motd::issue: "Please login"
+#   motd::issue.net: "Nothing to see here"
+#
+# @param content The message to use for login message (or all messages) on all platforms
+# @param issue_content The message  to be used for `/etc/issue` (pre-login message - linux only)
+# @param issue_net_content The message to be used for `/etc/issue.net` (pre-login message for telnet/other nominated
+#   services - linux only)
+# @param identical_content `true` to use the main MOTD message from `content` for all messages unless overriden
+#   individually by `issue_content` and `issue_net` (linux only)
 class motd (
-  $content                    = undef,
-  $issue_content              = undef,
-  $issue_net_content          = undef,
-  Boolean $identical_message  = false,
+  Optional[String]  $content            = undef,
+  Optional[String]  $issue_content      = undef,
+  Optional[String]  $issue_net_content  = undef,
+  Boolean           $identical_content  = false,
 ) {
 
-  $motd_content = pick($content, template('motd/motd.erb'))
+  # use supplied content if avaiable otherwise process our template for a generic message
+  $motd_content = pick($content, epp('motd/motd.epp'))
 
   if $facts['kernel'] == 'windows' {
     registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption':
@@ -58,8 +104,8 @@ class motd (
     }
 
     $motd = '/etc/motd'
-    if $identical_message {
-      $default_content = template('motd/motd.erb')
+    if $identical_content {
+      $default_content = $motd_content
     } else {
       $default_content = false
     }
@@ -71,6 +117,12 @@ class motd (
       owner => $owner,
       group => $group,
       mode  => '0644'
+    }
+
+    concat::fragment{"motd_main":
+      target  => $motd,
+      content => $motd_content,
+      order   => "05",
     }
 
     # let local users add to the motd by creating a file called
@@ -85,19 +137,6 @@ class motd (
       source => '/etc/motd.local',
       order  => '15'
     }
-
-    concat::fragment{"motd_header":
-      target  => $motd,
-      content => $motd_content,
-      order   => 01,
-    }
-
-    concat::fragment{"motd_footer":
-      target  => $motd,
-      content => "\n\n",
-      order   => 99
-    }
-
 
     if $_issue_content {
       file { '/etc/issue':

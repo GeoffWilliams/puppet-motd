@@ -1,0 +1,7 @@
+<%= $facts['fqdn'] %> (<%= $facts['networking']['ip'] %>)
+===============================================================================
+<%= $facts['os']['name'] %> <%= $facts['os']['release']['full'] %> <%= $facts['os']['architecture'] %>
+
+Processor: <%= $facts['processors']['count'] %>x <%= $facts['processors']['models'][0] %>
+Kernel:    <%= $facts['kernelrelease'] %>
+Memory:    <%= $facts['memory']['system']['total'] %>
