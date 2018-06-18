@@ -54,24 +54,29 @@
 #
 #     This Server is Managed by Puppet and is a Cowboy free zone!
 #     Beware that changes maybe overwritten without notice
-#   motd::issue: "Please login"
-#   motd::issue.net: "Nothing to see here"
+#   motd::issue_content: "Please login"
+#   motd::issue_net_content: "Nothing to see here"
 #
-# @param content The message to use for login message (or all messages) on all platforms
-# @param issue_content The message  to be used for `/etc/issue` (pre-login message - linux only)
+# @param content The message to use for login message (or all messages) on all platforms or `false` to write an empty
+#   file
+# @param issue_content The message  to be used for `/etc/issue` (pre-login message - linux only) or `false` to write an
+#   empty file
 # @param issue_net_content The message to be used for `/etc/issue.net` (pre-login message for telnet/other nominated
-#   services - linux only)
+#   services - linux only) or `false` to write an empty file
 # @param identical_content `true` to use the main MOTD message from `content` for all messages unless overriden
 #   individually by `issue_content` and `issue_net` (linux only)
 class motd (
-  Optional[String]  $content            = undef,
-  Optional[String]  $issue_content      = undef,
-  Optional[String]  $issue_net_content  = undef,
-  Boolean           $identical_content  = false,
+  Variant[Boolean, Optional[String]]  $content            = undef,
+  Variant[Boolean, Optional[String]]  $issue_content      = undef,
+  Variant[Boolean, Optional[String]]  $issue_net_content  = undef,
+  Boolean                             $identical_content  = false,
 ) {
 
   # use supplied content if avaiable otherwise process our template for a generic message
-  $motd_content = pick($content, epp('motd/motd.epp'))
+  $motd_content = $content ? {
+    Boolean => "",
+    default => pick($content, epp('motd/motd.epp'))
+  }
 
   if $facts['kernel'] == 'windows' {
     registry_value { 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption':
@@ -109,9 +114,16 @@ class motd (
     } else {
       $default_content = false
     }
-    $_issue_content     = pick($issue_content, $default_content)
-    $_issue_net_content = pick($issue_net_content, $default_content)
 
+    $_issue_content = $issue_content ? {
+      Boolean => "",
+      default => pick($issue_content, $default_content)
+    }
+
+    $_issue_net_content = $issue_net_content ? {
+      Boolean => "",
+      default => pick($issue_net_content, $default_content)
+    }
 
     concat { $motd:
       owner => $owner,

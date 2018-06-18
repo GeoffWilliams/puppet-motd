@@ -156,8 +156,8 @@ motd::content: |
 
   This Server is Managed by Puppet and is a Cowboy free zone!
   Beware that changes maybe overwritten without notice
-motd::issue: &quot;Please login&quot;
-motd::issue.net: &quot;Nothing to see here&quot;</code></pre>
+motd::issue_content: &quot;Please login&quot;
+motd::issue_net_content: &quot;Nothing to see here&quot;</code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -168,7 +168,7 @@ motd::issue.net: &quot;Nothing to see here&quot;</code></pre>
         <span class='name'>content</span>
       
       
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
+        <span class='type'>(<tt>Variant[Boolean, Optional[String]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -176,7 +176,8 @@ motd::issue.net: &quot;Nothing to see here&quot;</code></pre>
       
         &mdash;
         <div class='inline'>
-<p>The message to use for login message (or all messages) on all platforms</p>
+<p>The message to use for login message (or all messages) on all platforms or
+<code>false</code> to write an empty file</p>
 </div>
       
     </li>
@@ -186,7 +187,7 @@ motd::issue.net: &quot;Nothing to see here&quot;</code></pre>
         <span class='name'>issue_content</span>
       
       
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
+        <span class='type'>(<tt>Variant[Boolean, Optional[String]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -195,7 +196,7 @@ motd::issue.net: &quot;Nothing to see here&quot;</code></pre>
         &mdash;
         <div class='inline'>
 <p>The message to be used for <code>/etc/issue</code> (pre-login message -
-linux only)</p>
+linux only) or <code>false</code> to write an empty file</p>
 </div>
       
     </li>
@@ -205,7 +206,7 @@ linux only)</p>
         <span class='name'>issue_net_content</span>
       
       
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
+        <span class='type'>(<tt>Variant[Boolean, Optional[String]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -214,7 +215,8 @@ linux only)</p>
         &mdash;
         <div class='inline'>
 <p>The message to be used for <code>/etc/issue.net</code> (pre-login message
-for telnet/other nominated services - linux only)</p>
+for telnet/other nominated services - linux only) or <code>false</code> to
+write an empty file</p>
 </div>
       
     </li>
@@ -256,8 +258,6 @@ for all messages unless overriden individually by
         <pre class="lines">
 
 
-66
-67
 68
 69
 70
@@ -346,20 +346,35 @@ for all messages unless overriden individually by
 153
 154
 155
-156</pre>
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 66</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 68</span>
 
 class motd (
-  Optional[String]  $content            = undef,
-  Optional[String]  $issue_content      = undef,
-  Optional[String]  $issue_net_content  = undef,
-  Boolean           $identical_content  = false,
+  Variant[Boolean, Optional[String]]  $content            = undef,
+  Variant[Boolean, Optional[String]]  $issue_content      = undef,
+  Variant[Boolean, Optional[String]]  $issue_net_content  = undef,
+  Boolean                             $identical_content  = false,
 ) {
 
   # use supplied content if avaiable otherwise process our template for a generic message
-  $motd_content = pick($content, epp(&#39;motd/motd.epp&#39;))
+  $motd_content = $content ? {
+    Boolean =&gt; &quot;&quot;,
+    default =&gt; pick($content, epp(&#39;motd/motd.epp&#39;))
+  }
 
   if $facts[&#39;kernel&#39;] == &#39;windows&#39; {
     registry_value { &#39;HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption&#39;:
@@ -397,9 +412,16 @@ class motd (
     } else {
       $default_content = false
     }
-    $_issue_content     = pick($issue_content, $default_content)
-    $_issue_net_content = pick($issue_net_content, $default_content)
 
+    $_issue_content = $issue_content ? {
+      Boolean =&gt; &quot;&quot;,
+      default =&gt; pick($issue_content, $default_content)
+    }
+
+    $_issue_net_content = $issue_net_content ? {
+      Boolean =&gt; &quot;&quot;,
+      default =&gt; pick($issue_net_content, $default_content)
+    }
 
     concat { $motd:
       owner =&gt; $owner,
