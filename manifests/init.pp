@@ -117,12 +117,12 @@ class motd (
 
     $_issue_content = $issue_content ? {
       Boolean => "",
-      default => pick($issue_content, $default_content)
+      default => pick_default($issue_content, $default_content)
     }
 
     $_issue_net_content = $issue_net_content ? {
       Boolean => "",
-      default => pick($issue_net_content, $default_content)
+      default => pick_default($issue_net_content, $default_content)
     }
 
     concat { $motd:
