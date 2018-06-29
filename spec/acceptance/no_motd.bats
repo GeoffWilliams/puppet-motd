@@ -1,5 +1,5 @@
 @test "/etc/motd empty" {
-  [[ -s /etc/motd ]]
+  [[ ! -s /etc/motd ]]
 }
 
 @test "/etc/issue.net" {

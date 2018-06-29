@@ -8,9 +8,7 @@
 #   * `/etc/issue`
 #   * `/etc/issue.net`
 #
-# A file will be created for you at `/etc/motd.local` which will be displayed to local users logging in via `/etc/motd`.
-# You are free to write any content you like to this file. The `motd::register` defined type can also be used to add to
-# to `/etc/motd` if desired.
+# The `motd::register` defined type can also be used to add to to `/etc/motd` if desired.
 #
 # *Windows*
 # On windows there is only one message which we write to registry key:
@@ -108,7 +106,11 @@ class motd (
       mode    => '0644',
     }
 
-    $motd = '/etc/motd'
+    file { '/etc/motd':
+      ensure  => file,
+      content => $motd_content,
+    }
+
     if $identical_content {
       $default_content = $motd_content
     } else {
@@ -125,31 +127,6 @@ class motd (
       default => pick_default($issue_net_content, $default_content)
     }
 
-    concat { $motd:
-      owner => $owner,
-      group => $group,
-      mode  => '0644'
-    }
-
-    concat::fragment{"motd_main":
-      target  => $motd,
-      content => $motd_content,
-      order   => "05",
-    }
-
-    # let local users add to the motd by creating a file called
-    # /etc/motd.local - NOTE that this message will only be shown
-    # to LOCAL users via /etc/motd to prevent unwanted information
-    # disclosure to those using ftp, etc
-    file {'/etc/motd.local':
-      ensure => file,
-    }
-    concat::fragment{ 'motd_local':
-      target => $motd,
-      source => '/etc/motd.local',
-      order  => '15'
-    }
-
     if $_issue_content {
       file { '/etc/issue':
         ensure  => file,
@@ -163,6 +140,5 @@ class motd (
         content => $_issue_net_content,
       }
     }
-
   }
 }

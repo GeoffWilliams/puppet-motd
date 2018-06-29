@@ -1,6 +1,6 @@
 {
   "name": "geoffwilliams-motd",
-  "version": "2.2.2",
+  "version": "3.0.0",
   "author": "geoffwilliams",
   "summary": "Puppet MOTD module",
   "license": "Apache-2.0",
@@ -9,8 +9,7 @@
   "issues_url": "https://github.com/GeoffWilliams/puppet-motd/issues",
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
-    {"name":"puppetlabs-registry","version_requirement":">= 1.1.4"},
-    {"name":"puppetlabs-concat","version_requirement":">= 2.0.0"}
+    {"name":"puppetlabs-registry","version_requirement":">= 1.1.4"}
   ],
   "data_provider": null
 }

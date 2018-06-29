@@ -82,10 +82,7 @@
 <p><em>Linux</em> Management of the files at:  * <code>/etc/motd</code>  *
 <code>/etc/issue</code>  * <code>/etc/issue.net</code></p>
 
-<p>A file will be created for you at <code>/etc/motd.local</code> which will
-be displayed to local users logging in via <code>/etc/motd</code>. You are
-free to write any content you like to this file. The
-<code>motd::register</code> defined type can also be used to add to to
+<p>The <code>motd::register</code> defined type can also be used to add to to
 <code>/etc/motd</code> if desired.</p>
 
 <p><em>Windows</em> On windows there is only one message which we write to
@@ -258,6 +255,8 @@ for all messages unless overriden individually by
         <pre class="lines">
 
 
+66
+67
 68
 69
 70
@@ -334,34 +333,10 @@ for all messages unless overriden individually by
 141
 142
 143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168</pre>
+144</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 68</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 66</span>
 
 class motd (
   Variant[Boolean, Optional[String]]  $content            = undef,
@@ -406,7 +381,11 @@ class motd (
       mode    =&gt; &#39;0644&#39;,
     }
 
-    $motd = &#39;/etc/motd&#39;
+    file { &#39;/etc/motd&#39;:
+      ensure  =&gt; file,
+      content =&gt; $motd_content,
+    }
+
     if $identical_content {
       $default_content = $motd_content
     } else {
@@ -423,31 +402,6 @@ class motd (
       default =&gt; pick_default($issue_net_content, $default_content)
     }
 
-    concat { $motd:
-      owner =&gt; $owner,
-      group =&gt; $group,
-      mode  =&gt; &#39;0644&#39;
-    }
-
-    concat::fragment{&quot;motd_main&quot;:
-      target  =&gt; $motd,
-      content =&gt; $motd_content,
-      order   =&gt; &quot;05&quot;,
-    }
-
-    # let local users add to the motd by creating a file called
-    # /etc/motd.local - NOTE that this message will only be shown
-    # to LOCAL users via /etc/motd to prevent unwanted information
-    # disclosure to those using ftp, etc
-    file {&#39;/etc/motd.local&#39;:
-      ensure =&gt; file,
-    }
-    concat::fragment{ &#39;motd_local&#39;:
-      target =&gt; $motd,
-      source =&gt; &#39;/etc/motd.local&#39;,
-      order  =&gt; &#39;15&#39;
-    }
-
     if $_issue_content {
       file { &#39;/etc/issue&#39;:
         ensure  =&gt; file,
@@ -461,7 +415,6 @@ class motd (
         content =&gt; $_issue_net_content,
       }
     }
-
   }
 }</pre>
       </td>
