@@ -6,15 +6,17 @@
 1. [Description](#description)
 1. [Features](#features)
 1. [Puppet resource implementation](#puppet-resource-implementation)
-1. [motd precedence](#motd-precedence)
-1. [Value handling](#value-handling)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Limitations - OS compatibility, etc.](#limitations)
 1. [Development - Guide for contributing to the module](#development)
 
 ## Description
 
-Manage MOTD with puppet in the files:
+Manage MOTD with puppet.
+ 
+## Features
+
+Write to some or all of:
 
 * `/etc/motd` 
 * `/etc/issue` 

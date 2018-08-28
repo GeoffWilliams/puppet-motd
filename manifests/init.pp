@@ -6,16 +6,13 @@
 #   * `/etc/issue`
 #   * `/etc/issue.net`
 #
-# The `motd::register` defined type can also be used to add to to `/etc/motd` if desired.
-#
 # *Windows*
 # On windows there is only one message which we write to registry key:
 #   `HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext`
 #
-# @see https://forge.puppet.com/puppetlabs/concat
+# @see https://forge.puppet.com/puppetlabs/registry
 #
 # @example Default message
-# If you do not supply the MOTD content, we will generate one for you from a template. Output will be similar to:
 #   1f4ac00d071c (172.17.0.4)
 #   ===============================================================================
 #   CentOS 7.4.1708 x86_64
