@@ -9,4 +9,4 @@ gem 'rspec-puppet-facts', '1.7.0'
 
 # Workaround for PDOC-160
 gem 'puppet-strings', :git => 'https://github.com/puppetlabs/puppet-strings'
-gem 'pdqtest', '1.2.1'
+gem 'pdqtest', '1.3.0'
