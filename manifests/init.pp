@@ -1,6 +1,4 @@
-# Class: motd
-#
-# Setup the Message Of The Day on Windows and Linux.
+# @summary Setup the Message Of The Day on Windows and Linux.
 #
 # *Linux*
 # Management of the files at:

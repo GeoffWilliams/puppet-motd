@@ -3,15 +3,11 @@
 
 ## Classes
 
-* [`motd`](#motd): Class: motd  Setup the Message Of The Day on Windows and Linux.  *Linux* Management of the files at:   * `/etc/motd`   * `/etc/issue`   * `/e
+* [`motd`](#motd): Setup the Message Of The Day on Windows and Linux.
 
 ## Classes
 
 ### motd
-
-Class: motd
-
-Setup the Message Of The Day on Windows and Linux.
 
 *Linux*
 Management of the files at:
