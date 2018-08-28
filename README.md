@@ -9,7 +9,6 @@
 1. [motd precedence](#motd-precedence)
 1. [Value handling](#value-handling)
 1. [Usage - Configuration options and additional functionality](#usage)
-1. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 1. [Limitations - OS compatibility, etc.](#limitations)
 1. [Development - Guide for contributing to the module](#development)
 
@@ -21,14 +20,6 @@ Manage MOTD with puppet in the files:
 * `/etc/issue` 
 * `/etc/issue.net`
 
-## Reference
-[generated documentation](https://rawgit.com/GeoffWilliams/puppet-motd/master/doc/index.html).
-
-Reference documentation is generated directly from source code using [puppet-strings](https://github.com/puppetlabs/puppet-strings).  You may regenerate the documentation by running:
-
-```shell
-bundle exec puppet strings
-```
 
 ## Limitations
 *   Tested on RHEL/CentOS 7 so far. You might be able to support other systems by passing the appropriate command to 
