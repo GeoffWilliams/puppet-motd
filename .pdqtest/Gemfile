@@ -1,3 +1,4 @@
+source 'https://rubygems.org'
 gem 'pdqtest', '1.9.9beta6'
 gem 'puppet-strings'
 gem 'puppet'
