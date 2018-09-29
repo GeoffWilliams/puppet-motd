@@ -1,0 +1,6 @@
+---
+".travis.yml":
+  unmanaged: true
+".gitignore":
+  paths:
+  - ".Puppetfile.pdqtest"

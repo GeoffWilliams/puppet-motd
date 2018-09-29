@@ -1,0 +1,5 @@
+gem 'pdqtest', '1.9.9beta6'
+gem 'puppet-strings'
+gem 'puppet'
+gem 'puppet-lint'
+gem 'puppet-syntax'

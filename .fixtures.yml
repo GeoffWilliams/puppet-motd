@@ -1,0 +1,9 @@
+---
+fixtures:
+  forge_modules:
+    stdlib:
+      repo: puppetlabs-stdlib
+      ref: 5.0.0
+    registry:
+      repo: puppetlabs-registry
+      ref: 2.0.2
